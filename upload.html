@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CollabCanvas – Upload Guest</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-soft: #e0e7ff;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, #eef2ff, #f9fafb);
+            color: var(--text-main);
+        }
+
+        header {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+        }
+
+        .header-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-text h1 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        nav a {
+            color: #e5e7eb;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 0.9rem;
+            padding-bottom: 2px;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            border-bottom-color: rgba(255,255,255,0.8);
+        }
+
+        nav a.active {
+            border-bottom-color: white;
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 1040px;
+            margin: 24px auto 40px auto;
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 800px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        form {
+            background: white;
+            padding: 18px 18px 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(15,23,42,0.12);
+        }
+
+        form h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 7px 9px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 0.9rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+        }
+
+        button[type="submit"] {
+            margin-top: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            opacity: 0.96;
+        }
+
+        #status {
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+
+        .status-ok { color: #15803d; }
+        .status-err { color: #b91c1c; }
+
+        /* Preview card */
+        .preview {
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(15,23,42,0.12);
+            height: fit-content;
+        }
+
+        .preview h2 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 12px 14px;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(79,70,229,0.12), transparent 55%);
+            pointer-events: none;
+        }
+
+        .tag-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            background: var(--primary-soft);
+            color: #3730a3;
+        }
+
+        .chip span {
+            margin-left: 4px;
+        }
+
+        .guest-id {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .name-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .name-row h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .age-pill {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #f3f4ff;
+            color: #4338ca;
+        }
+
+        .experience {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .preview-img {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            max-height: 160px;
+            margin: 6px 0;
+            display: none;
+        }
+
+        .preview-empty {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="brand">
+            <div class="brand-logo">CC</div>
+            <div class="brand-text">
+                <h1>CollabCanvas</h1>
+                <span>Upload Guest</span>
+            </div>
+        </div>
+        <nav>
+            <a href="/index.html">Home</a>
+            <a href="/browse.html">Browse</a>
+            <a href="/upload.html" class="active">Upload</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- LEFT: FORM -->
+    <section>
+        <form id="guestForm">
+            <h2>Add a new guest</h2>
+
+            <label for="guestid">Guest ID</label>
+            <input type="number" id="guestid" name="guestid" required>
+
+            <label for="guestname">Guest Name</label>
+            <input type="text" id="guestname" name="guestname" required>
+
+            <label for="guestage">Age</label>
+            <input type="number" id="guestage" name="guestage">
+
+            <label for="guestart">Art Type / Style</label>
+            <input type="text" id="guestart" name="guestart" placeholder="Photography, music, digital art, etc.">
+
+            <label for="guestexperience">Experience (years)</label>
+            <input type="number" id="guestexperience" name="guestexperience" min="0">
+
+            <label for="guestimage">Image URL</label>
+            <input type="text" id="guestimage" name="guestimage" placeholder="Paste a link to their artwork">
+
+            <button type="submit">Save Guest</button>
+            <div id="status"></div>
+        </form>
+    </section>
+
+    <!-- RIGHT: LIVE PREVIEW -->
+    <section class="preview">
+        <h2>Live Preview</h2>
+        <div id="previewCard" class="card">
+            <div class="tag-row">
+                <div class="chip">
+                    🎨 <span id="previewArt">Art style n/a</span>
+                </div>
+                <div class="guest-id">ID: <span id="previewId">n/a</span></div>
+            </div>
+            <img id="previewImg" class="preview-img" alt="Artwork preview">
+            <div class="preview-empty" id="previewImgEmpty">Image preview will appear here.</div>
+            <div class="name-row">
+                <h3 id="previewName">Unnamed guest</h3>
+                <span class="age-pill" id="previewAge">Age n/a</span>
+            </div>
+            <div class="experience">
+                <strong>Experience:</strong>
+                <span id="previewExp" style="opacity:0.7;">n/a</span>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    const form = document.getElementById("guestForm");
+    const statusEl = document.getElementById("status");
+
+    const idInput = document.getElementById("guestid");
+    const nameInput = document.getElementById("guestname");
+    const ageInput = document.getElementById("guestage");
+    const artInput = document.getElementById("guestart");
+    const expInput = document.getElementById("guestexperience");
+    const imgInput = document.getElementById("guestimage");
+
+    const previewId = document.getElementById("previewId");
+    const previewName = document.getElementById("previewName");
+    const previewAge = document.getElementById("previewAge");
+    const previewArt = document.getElementById("previewArt");
+    const previewExp = document.getElementById("previewExp");
+    const previewImg = document.getElementById("previewImg");
+    const previewImgEmpty = document.getElementById("previewImgEmpty");
+
+    function updatePreview() {
+        const idVal = idInput.value.trim();
+        const nameVal = nameInput.value.trim();
+        const ageVal = ageInput.value.trim();
+        const artVal = artInput.value.trim();
+        const expVal = expInput.value.trim();
+        const imgVal = imgInput.value.trim();
+
+        previewId.textContent = idVal || "n/a";
+        previewName.textContent = nameVal || "Unnamed guest";
+        previewArt.textContent = artVal || "Art style n/a";
+
+        previewAge.textContent = ageVal ? `Age ${ageVal}` : "Age n/a";
+
+        if (expVal) {
+            const years = Number(expVal);
+            if (!Number.isNaN(years)) {
+                previewExp.textContent = `${years} ${years === 1 ? "year" : "years"}`;
+            } else {
+                previewExp.textContent = expVal;
+            }
+            previewExp.style.opacity = "1";
+        } else {
+            previewExp.textContent = "n/a";
+            previewExp.style.opacity = "0.7";
+        }
+
+        if (imgVal) {
+            previewImg.src = imgVal;
+            previewImg.style.display = "block";
+            previewImgEmpty.style.display = "none";
+        } else {
+            previewImg.src = "";
+            previewImg.style.display = "none";
+            previewImgEmpty.style.display = "block";
+        }
+    }
+
+    // Update preview live
+    [idInput, nameInput, ageInput, artInput, expInput, imgInput].forEach(input => {
+        input.addEventListener("input", updatePreview);
+    });
+
+    // Initial preview
+    updatePreview();
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        statusEl.textContent = "Saving...";
+        statusEl.className = "";
+
+        const payload = {
+    guestid: idInput.value,
+    guestname: nameInput.value,
+    guestage: ageInput.value,
+    guestart: artInput.value,
+    guestexperience: expInput.value, // new name
+    guestexp: expInput.value,        // old name (for safety)
+    guestimage: imgInput.value
+};
+
+
+        try {
+            const res = await fetch("/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                throw new Error("Server error: " + res.status);
+            }
+
+            await res.json().catch(() => ({})); // in case server returns no JSON
+
+            statusEl.textContent = "Guest saved successfully!";
+            statusEl.className = "status-ok";
+            form.reset();
+            updatePreview();
+        } catch (err) {
+            console.error("Error saving guest:", err);
+            statusEl.textContent = "Error saving guest. Check server/log.";
+            statusEl.className = "status-err";
+        }
+    });
+</script>
+</body>
+</html>

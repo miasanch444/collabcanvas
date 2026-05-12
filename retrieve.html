@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CollabCanvas – All Guests</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-gradient: radial-gradient(circle at top left, #f5d0ff, #0f172a);
+        --card-bg: rgba(15, 23, 42, 0.94);
+        --accent: #6366f1;
+        --accent-2: #ec4899;
+        --text-main: #f9fafb;
+        --text-muted: #9ca3af;
+        --border-subtle: rgba(148, 163, 184, 0.4);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-gradient);
+        color: var(--text-main);
+        font-family: "Inter", sans-serif;
+      }
+
+      .shell {
+        width: 100%;
+        max-width: 900px;
+        padding: 24px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .nav-title {
+        display: flex;
+        gap: 8px;
+        font-weight: 700;
+      }
+
+      .nav-pill {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 180deg,
+          #a855f7,
+          #ec4899,
+          #f97316,
+          #22c55e,
+          #0ea5e9,
+          #a855f7
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #020617;
+        font-weight: 800;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 12px;
+        font-size: 0.85rem;
+      }
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 999px;
+        transition: 0.2s;
+      }
+      .nav-links a:hover {
+        background: rgba(15, 23, 42, 0.85);
+        color: var(--text-main);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        border: 1px solid var(--border-subtle);
+        padding: 22px;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, 0.65);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.6rem;
+      }
+
+      .subtitle {
+        margin-top: 6px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+      }
+
+      .status {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        min-height: 1.1em;
+        margin-bottom: 10px;
+      }
+      .status.error { color: #fecaca; }
+      .status.empty { color: #e5e7eb; }
+
+      .list-header, .row {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr 0.6fr 1fr 1.1fr;
+        gap: 8px;
+        padding: 7px 10px;
+        font-size: 0.85rem;
+      }
+
+      .list-header {
+        font-weight: 600;
+        color: var(--text-muted);
+        border-bottom: 1px solid rgba(148,163,184,0.4);
+        margin-bottom: 6px;
+      }
+
+      .row {
+        background: rgba(15,23,42,0.75);
+        border-radius: 10px;
+        margin-bottom: 4px;
+        font-size: 0.9rem;
+      }
+      .row:nth-child(odd) {
+        background: rgba(15,23,42,0.9);
+      }
+    </style>
+
+    <script>
+      window.addEventListener("load", () => {
+        const records = document.getElementById("records");
+        const statusEl = document.getElementById("status");
+
+        async function readAll() {
+          statusEl.textContent = "Loading guests...";
+
+          try {
+            const response = await fetch("http://localhost:7777/retrieve");
+            if (!response.ok) throw new Error("Server error");
+            const data = await response.json();
+
+            records.innerHTML = "";
+
+            if (!data || data.length === 0) {
+              statusEl.textContent = "";
+              statusEl.className = "status empty";
+              records.innerHTML =
+                "<div class='row'>No guests found.</div>";
+              return;
+            }
+
+            statusEl.textContent = "";
+
+            const header = document.createElement("div");
+            header.className = "list-header";
+            header.innerHTML = `
+              <div>ID</div>
+              <div>Name</div>
+              <div>Age</div>
+              <div>Art</div>
+              <div>Experience</div>
+            `;
+            records.appendChild(header);
+
+            data.forEach(row => {
+              const div = document.createElement("div");
+              div.className = "row";
+              div.innerHTML = `
+                <div>${row.guestid}</div>
+                <div>${row.guestname || ""}</div>
+                <div>${row.guestage || ""}</div>
+                <div>${row.guestart || ""}</div>
+                <div>${row.guestexperience || ""}</div>
+              `;
+              records.appendChild(div);
+            });
+
+          } catch (err) {
+            statusEl.textContent = "Error loading guests. Check backend.";
+            statusEl.className = "status error";
+          }
+        }
+
+        readAll();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="shell">
+      <header class="nav">
+        <div class="nav-title">
+          <div class="nav-pill">C</div>
+          <span>CollabCanvas</span>
+        </div>
+        <nav class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="create.html">Create</a>
+          <a href="update.html">Update</a>
+          <a href="delete.html">Delete</a>
+        </nav>
+      </header>
+
+      <div class="card">
+        <h1>All Guests</h1>
+        <p class="subtitle">A full list of creatives in your network.</p>
+
+        <div id="status" class="status"></div>
+        <div id="records"></div>
+      </div>
+    </div>
+  </body>
+</html>

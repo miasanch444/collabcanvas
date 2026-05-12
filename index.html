@@ -1,0 +1,567 @@
+<!--
+  CollabCanvas – Create & Collaborate
+  Author: Mia Sanchez
+  Date: April 1, 2026
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CollabCanvas – Create & Collaborate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-gradient: radial-gradient(circle at top left, #f5d0ff, #0f172a);
+        --card-bg: rgba(15, 23, 42, 0.94);
+        --accent: #6366f1;
+        --accent-2: #ec4899;
+        --text-main: #f9fafb;
+        --text-muted: #9ca3af;
+        --border-subtle: rgba(148, 163, 184, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-gradient);
+        color: var(--text-main);
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      .shell {
+        width: 100%;
+        max-width: 1100px;
+        padding: 24px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+
+      .nav-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+
+      .nav-pill {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 180deg,
+          #a855f7,
+          #ec4899,
+          #f97316,
+          #22c55e,
+          #0ea5e9,
+          #a855f7
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #020617;
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 16px;
+        font-size: 0.9rem;
+      }
+
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 999px;
+        transition: background 0.2s, color 0.2s, transform 0.1s;
+      }
+
+      .nav-links a:hover {
+        background: rgba(15, 23, 42, 0.8);
+        color: var(--text-main);
+        transform: translateY(-1px);
+      }
+
+      .nav-links .primary-link {
+        background: linear-gradient(120deg, var(--accent), var(--accent-2));
+        color: #020617;
+        font-weight: 600;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
+        gap: 24px;
+      }
+
+      @media (max-width: 800px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .shell {
+          padding: 16px;
+        }
+      }
+
+      .card-main {
+        background: var(--card-bg);
+        border-radius: 24px;
+        border: 1px solid var(--border-subtle);
+        padding: 28px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.7);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card-main::after {
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background: radial-gradient(
+          circle at top right,
+          rgba(129, 140, 248, 0.35),
+          transparent 55%
+        );
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .card-main-inner {
+        position: relative;
+        z-index: 1;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        background: rgba(15, 23, 42, 0.7);
+        margin-bottom: 12px;
+      }
+
+      .eyebrow-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 3vw, 2.5rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+      }
+
+      .gradient-text {
+        background: linear-gradient(120deg, #a855f7, #ec4899, #f59e0b);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .subtitle {
+        margin: 0 0 20px;
+        color: var(--text-muted);
+        max-width: 36rem;
+        font-size: 0.95rem;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border-radius: 999px;
+        border: none;
+        font-size: 0.95rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(120deg, #22c55e, #06b6d4);
+        color: #020617;
+        font-weight: 600;
+        box-shadow: 0 12px 30px rgba(22, 163, 74, 0.4);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--text-main);
+        border: 1px solid rgba(148, 163, 184, 0.7);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        opacity: 0.96;
+      }
+
+      .btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 0.75rem;
+      }
+
+      .pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.6);
+        color: var(--text-muted);
+      }
+
+      .card-side {
+        background: rgba(15, 23, 42, 0.9);
+        border-radius: 24px;
+        border: 1px solid var(--border-subtle);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .side-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .side-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .side-sub {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin: 4px 0 8px;
+      }
+
+      .status-dot {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      .status-dot span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+      }
+
+      /* Grid of colorful tiles (live feed) */
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .preview-tile {
+        aspect-ratio: 1 / 1;
+        border-radius: 14px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .preview-tile::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(15, 23, 42, 0.8),
+          transparent
+        );
+      }
+
+      .preview-tile-content {
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        bottom: 6px;
+        z-index: 1;
+        font-size: 0.7rem;
+        line-height: 1.2;
+      }
+
+      .preview-name {
+        font-weight: 600;
+        color: #e5e7eb;
+        margin-bottom: 2px;
+      }
+
+      .preview-meta {
+        font-size: 0.65rem;
+        color: #cbd5f5;
+      }
+
+      .side-footer {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin-top: 6px;
+      }
+
+      .side-footer strong {
+        color: #e5e7eb;
+      }
+
+      .key-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 6px;
+      }
+
+      .key {
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px dashed rgba(148, 163, 184, 0.7);
+        font-size: 0.7rem;
+      }
+
+      .live-feed-empty {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .live-feed-empty a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .live-feed-empty a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="shell">
+      <header class="nav">
+        <div class="nav-title">
+          <div class="nav-pill">C</div>
+          <span>CollabCanvas</span>
+        </div>
+        <nav class="nav-links">
+          <a href="browse.html">Browse </a>
+          <a href="upload.html">Create Account </a>
+          <a href="/login" class="primary-link">Sign in</a>
+        </nav>
+      </header>
+
+      <main class="layout">
+        <section class="card-main">
+          <div class="card-main-inner">
+            <div class="eyebrow">
+              <span class="eyebrow-dot"></span>
+              Join the creative community
+            </div>
+
+            <h1>
+              A space for
+              <span class="gradient-text">creatives to meet, share &amp; collaborate.</span>
+            </h1>
+
+            <p class="subtitle">
+              Browse artwork from other creatives, leave feedback, and start
+              collaborations.
+            </p>
+
+            <div class="actions">
+              <a href="retrieve.html" class="btn btn-primary"> Retrieve</a>
+              <a href="create.html" class="btn btn-outline"> Create</a>
+              <a href="update.html" class="btn btn-outline"> Update</a>
+              <a href="delete.html" class="btn btn-outline"> Delete</a>
+            </div>
+
+            <div class="pill-row">
+              <span class="pill">0</span>
+              <span class="pill">CRUD ready: create · read · update · delete</span>
+              <span class="pill"></span>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card-side">
+          <div class="side-header">
+            <div class="status-dot">
+              <span></span>
+              Online
+            </div>
+          </div>
+
+          <h2 class="side-title">Live Feed Preview</h2>
+          <p class="side-sub">Newest guests joining CollabCanvas.</p>
+
+          <!-- Dynamic colorful tiles with artists inside -->
+          <div id="liveFeedGrid" class="preview-grid"></div>
+          <p id="liveFeedEmpty" class="live-feed-empty" style="display:none;">
+            No guests yet. <a href="/upload.html">Add the first one!</a>
+          </p>
+
+          <div class="side-footer">
+            CRUD views:
+            <div class="key-row">
+              <div class="key">cards = artworks</div>
+              <div class="key">click → details + comments</div>
+              <div class="key">buttons → create / edit / delete</div>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script>
+      window.addEventListener("load", loadLiveFeed);
+
+      async function loadLiveFeed() {
+        const grid = document.getElementById("liveFeedGrid");
+        const empty = document.getElementById("liveFeedEmpty");
+
+        if (!grid) return;
+
+        grid.innerHTML = "";
+        empty.style.display = "none";
+
+        try {
+          const res = await fetch("/retrieve");
+          const data = await res.json();
+          const guests = Array.isArray(data) ? data : [];
+
+          if (!guests.length) {
+            empty.style.display = "block";
+            return;
+          }
+
+          // newest first by guestdate if available
+          guests.sort((a, b) => {
+            const da = a.guestdate ? new Date(a.guestdate) : 0;
+            const db = b.guestdate ? new Date(b.guestdate) : 0;
+            return db - da;
+          });
+
+          // show up to 6 tiles
+          const latest = guests.slice(0, 6);
+
+          const gradients = [
+            "linear-gradient(135deg, #38bdf8, #6366f1)",
+            "linear-gradient(135deg, #ec4899, #f97316)",
+            "linear-gradient(135deg, #22c55e, #0ea5e9)",
+            "linear-gradient(135deg, #a855f7, #6366f1)",
+            "linear-gradient(135deg, #f59e0b, #ef4444)",
+            "linear-gradient(135deg, #0f172a, #4b5563)",
+          ];
+
+          latest.forEach((g, index) => {
+            const name = g.guestname || "Unnamed";
+            const art = g.guestart || "Art style n/a";
+            const ageLabel =
+              g.guestage !== undefined &&
+              g.guestage !== null &&
+              g.guestage !== ""
+                ? `Age ${g.guestage}`
+                : "";
+            let expLabel = "";
+
+            if (
+              g.guestexperience !== undefined &&
+              g.guestexperience !== null &&
+              g.guestexperience !== ""
+            ) {
+              const years = Number(g.guestexperience);
+              if (!Number.isNaN(years)) {
+                expLabel = `${years} ${years === 1 ? "year" : "years"}`;
+              } else {
+                expLabel = g.guestexperience;
+              }
+            }
+
+            const imgUrl = g.guestimage || "";
+            const bg =
+              imgUrl ||
+              gradients[index % gradients.length];
+
+            const tile = document.createElement("div");
+            tile.className = "preview-tile";
+            tile.style.backgroundImage = imgUrl
+              ? `url('${imgUrl}')`
+              : bg;
+
+            tile.innerHTML = `
+              <div class="preview-tile-content">
+                <div class="preview-name">${name}</div>
+                <div class="preview-meta">
+                  🎨 ${art}
+                  ${ageLabel ? " • " + ageLabel : ""}
+                  ${expLabel ? " • " + expLabel : ""}
+                </div>
+              </div>
+            `;
+
+            grid.appendChild(tile);
+          });
+        } catch (err) {
+          console.error("Error loading live feed:", err);
+          empty.textContent = "Could not load live feed. Check server/Mongo.";
+          empty.style.display = "block";
+        }
+      }
+    </script>
+  </body>
+</html>
+

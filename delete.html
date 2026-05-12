@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CollabCanvas – Delete Guest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Optional Google Font (to match other pages) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-gradient: radial-gradient(circle at top left, #f5d0ff, #0f172a);
+        --card-bg: rgba(15, 23, 42, 0.94);
+        --accent: #6366f1;
+        --accent-2: #ec4899;
+        --text-main: #f9fafb;
+        --text-muted: #9ca3af;
+        --border-subtle: rgba(148, 163, 184, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-gradient);
+        color: var(--text-main);
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      .shell {
+        width: 100%;
+        max-width: 800px;
+        padding: 24px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .nav-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .nav-pill {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 180deg,
+          #a855f7,
+          #ec4899,
+          #f97316,
+          #22c55e,
+          #0ea5e9,
+          #a855f7
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #020617;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 10px;
+        font-size: 0.8rem;
+      }
+
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 4px 10px;
+        border-radius: 999px;
+        transition: background 0.2s, color 0.2s, transform 0.1s;
+      }
+
+      .nav-links a:hover {
+        background: rgba(15, 23, 42, 0.85);
+        color: var(--text-main);
+        transform: translateY(-1px);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        border: 1px solid var(--border-subtle);
+        padding: 22px 22px 24px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.7);
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: 1.6rem;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 0 0 16px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .status {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 10px;
+        min-height: 1.1em;
+      }
+
+      .status.error {
+        color: #fecaca;
+      }
+
+      .status.empty {
+        color: #e5e7eb;
+      }
+
+      .list-header {
+        display: grid;
+        grid-template-columns: 1.3fr 1.5fr 0.7fr 0.9fr 0.7fr;
+        gap: 8px;
+        padding: 8px 10px;
+        margin-bottom: 6px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1.3fr 1.5fr 0.7fr 0.9fr 0.7fr;
+        gap: 8px;
+        padding: 7px 10px;
+        font-size: 0.9rem;
+        align-items: center;
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.7);
+        margin-bottom: 4px;
+      }
+
+      .row:nth-child(odd) {
+        background: rgba(15, 23, 42, 0.9);
+      }
+
+      .guest-link {
+        color: #bfdbfe;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .guest-link:hover {
+        text-decoration: underline;
+      }
+
+      .tag {
+        font-size: 0.75rem;
+        color: #cbd5e1;
+      }
+
+      .empty-state {
+        padding: 16px 10px;
+        font-size: 0.9rem;
+      }
+    </style>
+
+    <script>
+      window.addEventListener("load", () => {
+        const list = document.getElementById("deleteList");
+        const statusEl = document.getElementById("status");
+
+        async function readAll() {
+          statusEl.textContent = "Loading guests...";
+          statusEl.className = "status";
+
+          try {
+            const response = await fetch("http://localhost:7777/retrieve");
+            if (!response.ok) {
+              throw new Error("Server responded with " + response.status);
+            }
+            const data = await response.json();
+
+            list.innerHTML = ""; // clear existing
+
+            if (!data || data.length === 0) {
+              statusEl.textContent = "";
+              statusEl.className = "status empty";
+              list.innerHTML =
+                '<div class="empty-state">No guests found. Nothing to delete.</div>';
+              return;
+            }
+
+            statusEl.textContent =
+              "Click a Guest ID to open the delete confirmation page.";
+            statusEl.className = "status";
+
+            // header
+            const header = document.createElement("div");
+            header.className = "list-header";
+            header.innerHTML = `
+              <div>Guest ID</div>
+              <div>Name</div>
+              <div>Age</div>
+              <div>Art</div>
+              <div>Experience (years)</div>
+            `;
+            list.appendChild(header);
+
+            // rows
+            data.forEach((row) => {
+              const div = document.createElement("div");
+              div.className = "row";
+
+              const idCell = document.createElement("div");
+              const link = document.createElement("a");
+              link.href = `delete-one.html?guestid=${encodeURIComponent(
+                row.guestid
+              )}`;
+              link.textContent = row.guestid;
+              link.className = "guest-link";
+              idCell.appendChild(link);
+
+              const nameCell = document.createElement("div");
+              nameCell.textContent = row.guestname || "";
+
+              const ageCell = document.createElement("div");
+              ageCell.textContent = row.guestage || "";
+
+              const artCell = document.createElement("div");
+              artCell.textContent = row.guestart || "";
+
+              const expCell = document.createElement("div");
+              expCell.textContent = row.guestexperience || "";
+
+              div.appendChild(idCell);
+              div.appendChild(nameCell);
+              div.appendChild(ageCell);
+              div.appendChild(artCell);
+              div.appendChild(expCell);
+
+              list.appendChild(div);
+            });
+          } catch (err) {
+            console.error(err);
+            statusEl.textContent =
+              "Error loading guests. Make sure the server is running.";
+            statusEl.className = "status error";
+          }
+        }
+
+        readAll();
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="shell">
+      <!-- Top nav -->
+      <header class="nav">
+        <div class="nav-title">
+          <div class="nav-pill">C</div>
+          <span>CollabCanvas</span>
+        </div>
+        <nav class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="create.html">Create</a>
+          <a href="retrieve.html">Retrieve</a>
+          <a href="update.html">Update</a>
+        </nav>
+      </header>
+
+      <!-- Main card -->
+      <div class="card">
+        <h1>Delete Guest</h1>
+        <p class="subtitle">
+          Select a guest ID to review and confirm deletion on the next screen.
+        </p>
+
+        <div id="status" class="status"></div>
+        <div id="deleteList"></div>
+      </div>
+    </div>
+  </body>
+</html>

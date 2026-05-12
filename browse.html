@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CollabCanvas – Browse Guests</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-soft: #e0e7ff;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --danger: #dc2626;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, #eef2ff, #f9fafb);
+            color: var(--text-main);
+        }
+
+        header {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-text h1 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .brand-text span {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        nav a {
+            color: #e5e7eb;
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 0.9rem;
+            padding-bottom: 2px;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            border-bottom-color: rgba(255,255,255,0.8);
+        }
+
+        nav a.active {
+            border-bottom-color: white;
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 1040px;
+            margin: 24px auto 40px auto;
+            padding: 0 16px;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .toolbar-left h2 {
+            margin: 0 0 4px 0;
+            font-size: 1.3rem;
+        }
+
+        .toolbar-left p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .toolbar-right {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper input {
+            padding: 7px 10px 7px 28px;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            font-size: 0.9rem;
+            min-width: 190px;
+            outline: none;
+            background: white;
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+        }
+
+        .search-wrapper span {
+            position: absolute;
+            left: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 7px 14px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #refreshBtn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 6px rgba(79,70,229,0.35);
+        }
+
+        #refreshBtn:hover { opacity: 0.95; }
+
+        #clearBtn {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 0 0 12px 0;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(79,70,229,0.12), transparent 55%);
+            pointer-events: none;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .card-body {
+            position: relative;
+            z-index: 1;
+            padding: 10px 14px 12px;
+        }
+
+        .tag-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            background: var(--primary-soft);
+            color: #3730a3;
+        }
+
+        .chip span { margin-left: 4px; }
+
+        .guest-id {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .name-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .name-row h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .age-pill {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #f3f4ff;
+            color: #4338ca;
+        }
+
+        .experience {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .empty-state {
+            margin-top: 40px;
+            padding: 28px 20px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.8);
+            border: 1px dashed #cbd5f5;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state h3 { margin-top: 0; }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            nav a {
+                margin-left: 0;
+                margin-right: 12px;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .toolbar-right {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="brand">
+            <div class="brand-logo">CC</div>
+            <div class="brand-text">
+                <h1>CollabCanvas</h1>
+                <span>Guest Directory</span>
+            </div>
+        </div>
+        <nav>
+            <a href="/index.html">Home</a>
+            <a href="/browse.html" class="active">Browse</a>
+            <a href="/upload.html">Upload</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="toolbar">
+        <div class="toolbar-left">
+            <h2>Browse Guests</h2>
+            <p>Search collaborators by name or art style, and explore who’s in your space.</p>
+        </div>
+        <div class="toolbar-right">
+            <div class="search-wrapper">
+                <span>🔍</span>
+                <input type="text" id="searchBox" placeholder="Search guests…">
+            </div>
+            <button id="refreshBtn">⟳ Refresh</button>
+            <button id="clearBtn">✖ Clear</button>
+        </div>
+    </section>
+
+    <div class="meta" id="metaInfo"></div>
+    <div class="error-msg" id="errorMsg" style="display:none;"></div>
+
+    <section id="guestGrid" class="grid"></section>
+
+    <div id="emptyState" class="empty-state" style="display:none;">
+        <h3>No guests yet</h3>
+        <p>
+            It looks a little quiet in here. Try refreshing,
+            or <a href="/upload.html">add a new guest</a> to CollabCanvas.
+        </p>
+    </div>
+</main>
+
+<script>
+window.addEventListener("load", () => {
+    const searchBox = document.getElementById("searchBox");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const guestGrid = document.getElementById("guestGrid");
+    const emptyState = document.getElementById("emptyState");
+    const metaInfo = document.getElementById("metaInfo");
+    const errorMsg = document.getElementById("errorMsg");
+
+    let allGuests = [];
+
+    async function loadGuests() {
+        errorMsg.style.display = "none";
+        metaInfo.textContent = "Loading guests…";
+        guestGrid.innerHTML = "";
+
+        try {
+            const res = await fetch("/retrieve");
+            const data = await res.json();
+            allGuests = Array.isArray(data) ? data : [];
+            renderGuests(allGuests);
+        } catch (err) {
+            console.error("Error loading guests:", err);
+            errorMsg.textContent = "Error loading guests. Make sure MongoDB and the server are running.";
+            errorMsg.style.display = "block";
+            metaInfo.textContent = "";
+            emptyState.style.display = "none";
+        }
+    }
+
+    function renderGuests(guests) {
+        guestGrid.innerHTML = "";
+
+        if (!guests || guests.length === 0) {
+            emptyState.style.display = "block";
+            metaInfo.textContent = "Showing 0 guests.";
+            return;
+        } else {
+            emptyState.style.display = "none";
+        }
+
+        metaInfo.textContent = `Showing ${guests.length} guest${guests.length === 1 ? "" : "s"}.`;
+
+        const gradients = [
+            "linear-gradient(135deg, #38bdf8, #6366f1)",
+            "linear-gradient(135deg, #ec4899, #f97316)",
+            "linear-gradient(135deg, #22c55e, #0ea5e9)",
+            "linear-gradient(135deg, #a855f7, #6366f1)",
+            "linear-gradient(135deg, #f59e0b, #ef4444)",
+            "linear-gradient(135deg, #0f172a, #4b5563)"
+        ];
+
+        guests.forEach((g, index) => {
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const art = g.guestart || "Art style n/a";
+            const name = g.guestname || "Unnamed guest";
+            const id = (g.guestid !== undefined && g.guestid !== null) ? g.guestid : "n/a";
+            const age = (g.guestage !== undefined && g.guestage !== null && !Number.isNaN(g.guestage))
+                ? `Age ${g.guestage}`
+                : "Age n/a";
+
+            let expLabel = "";
+            if (g.guestexperience !== undefined && g.guestexperience !== null && g.guestexperience !== "") {
+                const years = Number(g.guestexperience);
+                if (!Number.isNaN(years)) {
+                    expLabel = `${years} ${years === 1 ? "year" : "years"}`;
+                } else {
+                    expLabel = g.guestexperience;
+                }
+            }
+
+            const imgUrl = g.guestimage || "";
+            const bg = imgUrl || gradients[index % gradients.length];
+
+            card.innerHTML = `
+                <div class="card-img" style="background-image: ${
+                    imgUrl ? `url('${imgUrl}')` : bg
+                };"></div>
+                <div class="card-body">
+                    <div class="tag-row">
+                        <div class="chip">
+                            🎨 <span>${art}</span>
+                        </div>
+                        <div class="guest-id">ID: ${id}</div>
+                    </div>
+                    <div class="name-row">
+                        <h3>${name}</h3>
+                        <span class="age-pill">${age}</span>
+                    </div>
+                    <div class="experience">
+                        <strong>Experience:</strong>
+                        ${expLabel || "<span style='opacity:0.7;'>n/a</span>"}
+                    </div>
+                </div>
+            `;
+
+            guestGrid.appendChild(card);
+        });
+    }
+
+    function applyFilter() {
+        const q = searchBox.value.toLowerCase().trim();
+        if (!q) {
+            renderGuests(allGuests);
+            return;
+        }
+        const filtered = allGuests.filter(g => {
+            const name = (g.guestname || "").toLowerCase();
+            const art = (g.guestart || "").toLowerCase();
+            const exp = (String(g.guestexperience || "")).toLowerCase();
+            return (
+                name.includes(q) ||
+                art.includes(q) ||
+                exp.includes(q)
+            );
+        });
+        renderGuests(filtered);
+    }
+
+    function clearFilter() {
+        searchBox.value = "";
+        renderGuests(allGuests);
+    }
+
+    searchBox.addEventListener("input", applyFilter);
+    refreshBtn.addEventListener("click", loadGuests);
+    clearBtn.addEventListener("click", clearFilter);
+
+    loadGuests();
+});
+</script>
+</body>
+</html>
+
+

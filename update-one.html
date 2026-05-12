@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CollabCanvas – Update One Guest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Optional Google Font to match other pages -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg-gradient: radial-gradient(circle at top left, #f5d0ff, #0f172a);
+        --card-bg: rgba(15, 23, 42, 0.94);
+        --accent: #6366f1;
+        --accent-2: #ec4899;
+        --text-main: #f9fafb;
+        --text-muted: #9ca3af;
+        --border-subtle: rgba(148, 163, 184, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-gradient);
+        color: var(--text-main);
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      .shell {
+        width: 100%;
+        max-width: 520px;
+        padding: 24px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .nav-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .nav-pill {
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 180deg,
+          #a855f7,
+          #ec4899,
+          #f97316,
+          #22c55e,
+          #0ea5e9,
+          #a855f7
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #020617;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 10px;
+        font-size: 0.8rem;
+      }
+
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 4px 10px;
+        border-radius: 999px;
+        transition: background 0.2s, color 0.2s, transform 0.1s;
+      }
+
+      .nav-links a:hover {
+        background: rgba(15, 23, 42, 0.85);
+        color: var(--text-main);
+        transform: translateY(-1px);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        border: 1px solid var(--border-subtle);
+        padding: 24px 22px 26px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.7);
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: 1.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 0 0 16px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .id-display {
+        font-weight: 600;
+        color: #bfdbfe;
+      }
+
+      .form-group {
+        margin-bottom: 12px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.85rem;
+        color: #e5e7eb;
+      }
+
+      input {
+        width: 100%;
+        padding: 9px 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.7);
+        background: rgba(15, 23, 42, 0.7);
+        color: var(--text-main);
+        font-size: 0.9rem;
+      }
+
+      input::placeholder {
+        color: rgba(148, 163, 184, 0.9);
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.5);
+      }
+
+      .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 18px;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 18px;
+        border-radius: 999px;
+        border: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(120deg, #6366f1, #ec4899);
+        color: #020617;
+        font-weight: 600;
+        box-shadow: 0 12px 30px rgba(129, 140, 248, 0.4);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--text-main);
+        border: 1px solid rgba(148, 163, 184, 0.7);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        opacity: 0.96;
+      }
+
+      .btn:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .status {
+        margin-top: 12px;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        min-height: 1.1em;
+      }
+
+      .status.error {
+        color: #fecaca;
+      }
+
+      .status.success {
+        color: #bbf7d0;
+      }
+
+      /* hide the real id input but keep it in DOM for your PUT body */
+      #guestid {
+        display: none;
+      }
+    </style>
+
+    <script>
+      window.addEventListener("load", main);
+
+      function main() {
+        const btn = document.getElementById("btn");
+        readOne();
+        btn.addEventListener("click", writeOne);
+      }
+
+      async function readOne() {
+        const statusEl = document.getElementById("status");
+        const params = new URL(document.location).searchParams;
+        const id = params.get("guestid");
+
+        const guestidInput = document.getElementById("guestid");
+        const guestnameInput = document.getElementById("guestname");
+        const guestageInput = document.getElementById("guestage");
+        const guestartInput = document.getElementById("guestart");
+        const guestexperienceInput = document.getElementById("guestexperience");
+        const idDisplay = document.getElementById("id-display");
+
+        if (!id) {
+          statusEl.textContent = "No guest ID provided in the URL.";
+          statusEl.className = "status error";
+          return;
+        }
+
+        guestidInput.value = id;
+        idDisplay.textContent = id;
+        statusEl.textContent = "Loading guest data...";
+        statusEl.className = "status";
+
+        try {
+          const response = await fetch(
+            "http://localhost:7777/retrieve-one/" + encodeURIComponent(id)
+          );
+          if (!response.ok) {
+            throw new Error("Server responded with " + response.status);
+          }
+          const data = await response.json();
+
+          // populate inputs
+          guestidInput.value = data.guestid;
+          guestnameInput.value = data.guestname || "";
+          guestageInput.value = data.guestage || "";
+          guestartInput.value = data.guestart || "";
+          guestexperienceInput.value = data.guestexperience || "";
+
+          statusEl.textContent = "Edit the fields and click Update.";
+          statusEl.className = "status";
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent =
+            "Error loading guest. Make sure the server is running.";
+          statusEl.className = "status error";
+        }
+      }
+
+      async function writeOne() {
+        const statusEl = document.getElementById("status");
+
+        const guestidInput = document.getElementById("guestid");
+        const guestnameInput = document.getElementById("guestname");
+        const guestageInput = document.getElementById("guestage");
+        const guestartInput = document.getElementById("guestart");
+        const guestexperienceInput = document.getElementById(
+          "guestexperience"
+        );
+
+        const data = {
+          guestid: guestidInput.value,
+          guestname: guestnameInput.value,
+          guestage: guestageInput.value,
+          guestart: guestartInput.value,
+          guestexperience: guestexperienceInput.value,
+        };
+
+        if (!data.guestname) {
+          statusEl.textContent = "Name is required.";
+          statusEl.className = "status error";
+          return;
+        }
+
+        statusEl.textContent = "Saving changes...";
+        statusEl.className = "status";
+
+        try {
+          await fetch("http://localhost:7777/update", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          statusEl.textContent = "Guest updated. Redirecting…";
+          statusEl.className = "status success";
+
+          setTimeout(() => {
+            location.href = "retrieve.html";
+          }, 400);
+        } catch (err) {
+          console.error(err);
+          statusEl.textContent =
+            "Error updating guest. Please try again.";
+          statusEl.className = "status error";
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="shell">
+      <!-- Top nav -->
+      <header class="nav">
+        <div class="nav-title">
+          <div class="nav-pill">C</div>
+          <span>CollabCanvas</span>
+        </div>
+        <nav class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="update.html">Back to list</a>
+          <a href="retrieve.html">Retrieve</a>
+        </nav>
+      </header>
+
+      <!-- Main card -->
+      <div class="card">
+        <h1>Update Guest</h1>
+        <p class="subtitle">
+          Editing guest with ID <span id="id-display" class="id-display"></span>.
+        </p>
+
+        <!-- hidden id field (still used in JS/PUT) -->
+        <input id="guestid" />
+
+        <div class="form-group">
+          <label for="guestname">Name *</label>
+          <input id="guestname" type="text" placeholder="Guest name" />
+        </div>
+
+        <div class="form-group">
+          <label for="guestage">Age</label>
+          <input id="guestage" type="number" min="0" placeholder="e.g. 25" />
+        </div>
+
+        <div class="form-group">
+          <label for="guestart">Primary Art Form</label>
+          <input
+            id="guestart"
+            type="text"
+            placeholder="e.g. Digital illustration, music, photography"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="guestexperience">Experience Level</label>
+          <input
+            id="guestexperience"
+            type="text"
+            placeholder="e.g. Beginner, Intermediate, Professional"
+          />
+        </div>
+
+        <div class="actions">
+          <a href="update.html" class="btn btn-secondary">← Cancel</a>
+          <button type="button" id="btn" class="btn btn-primary">
+            ✏️ Update
+          </button>
+        </div>
+
+        <div id="status" class="status"></div>
+      </div>
+    </div>
+  </body>
+</html>
