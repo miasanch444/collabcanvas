@@ -28,7 +28,6 @@ app.get("/helloworld", function (req, res) {
 app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, "index.html"));
 });
-});
 
 // --------------------------- RETRIEVE ALL ---------------------------
 app.get("/retrieve", function (req, res) {
