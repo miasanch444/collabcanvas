@@ -8,8 +8,7 @@ let path    = require("path");
 let app  = express();
 let port = 7777;
 
-// Serve static files from the "www" folder
-app.use(express.static(path.join(__dirname, "www")));
+app.use(express.static(__dirname));
 
 // Parse JSON bodies (for fetch POST/PUT)
 app.use(express.json());
@@ -27,8 +26,8 @@ app.get("/helloworld", function (req, res) {
 
 // ✅ Root should serve the *www/index.html* file
 app.get("/", function (req, res) {
-    // Send the SPA shell from the static folder so the UI loads
-    res.sendFile(path.join(__dirname, "www", "index.html"));
+    res.sendFile(path.join(__dirname, "index.html"));
+});
 });
 
 // --------------------------- RETRIEVE ALL ---------------------------
